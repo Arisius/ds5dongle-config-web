@@ -24,6 +24,7 @@ import {
   SHORTCUT_ACTION_KEYBOARD,
   SHORTCUT_COUNT,
   SHORTCUT_FLAG_DOUBLE_TAP,
+  SHORTCUT_FLAG_HOLD,
   SHORTCUT_TRIGGER_DOUBLE_TAP,
   SHORTCUT_TRIGGER_TAP,
   ShortcutSlot,
@@ -39,11 +40,14 @@ import {
   keyLabel,
 } from "@/protocol/shortcutCatalog";
 
+import {
+  type TriggerGesture, getGesture, isChordGesture, isHoldGesture,
+  setGesture, captureTrigger, validSecondTrigger,
+} from "@/protocol/shortcutGestures";
+
 interface ShortcutsPageProps {
   bridge: UseDs5BridgeResult;
 }
-
-type TriggerGesture = "tap" | "doubleTap" | "chord" | "doubleChord";
 
 /** A trigger is one button, or a chord of two. */
 const MAX_TRIGGER_BUTTONS = 2;
@@ -88,14 +92,15 @@ export function ShortcutsPage({ bridge }: ShortcutsPageProps) {
     if (isShortcutDisabled(shortcut)) {
       return t("shortcuts.empty");
     }
+    const holdLabel = shortcut.flags & SHORTCUT_FLAG_HOLD ? ` · ${t("shortcuts.gestures.hold")}` : "";
     const first = buttonLabel(shortcut.triggerA);
     if (shortcut.triggerB === SHORTCUT_TRIGGER_TAP) {
-      return first;
+      return first + holdLabel;
     }
     if (shortcut.triggerB === SHORTCUT_TRIGGER_DOUBLE_TAP) {
       return `${first} ×2`;
     }
-    return `${first} + ${buttonLabel(shortcut.triggerB)}${shortcut.flags & SHORTCUT_FLAG_DOUBLE_TAP ? " ×2" : ""}`;
+    return `${first} + ${buttonLabel(shortcut.triggerB)}${shortcut.flags & SHORTCUT_FLAG_DOUBLE_TAP ? " ×2" : ""}${holdLabel}`;
   };
 
   const actionSummary = (shortcut: ShortcutSlot) => {
@@ -123,24 +128,12 @@ export function ShortcutsPage({ bridge }: ShortcutsPageProps) {
   };
 
   const updateGesture = (nextGesture: TriggerGesture) => {
-    const triggerA = selectedSlot.triggerA < BUTTON_SOURCE_COUNT ? selectedSlot.triggerA : 20;
-    const triggerB = validSecondTrigger(triggerA, selectedSlot.triggerB);
-    updateSelectedSlot({
-      ...selectedSlot,
-      triggerA,
-      triggerB:
-        nextGesture === "tap"
-          ? SHORTCUT_TRIGGER_TAP
-          : nextGesture === "doubleTap"
-            ? SHORTCUT_TRIGGER_DOUBLE_TAP
-            : triggerB,
-      flags: nextGesture === "doubleChord" ? SHORTCUT_FLAG_DOUBLE_TAP : 0,
-    });
+    updateSelectedSlot(setGesture(selectedSlot, nextGesture));
   };
 
   const updateTriggerA = (triggerA: number) => {
     const next = { ...selectedSlot, triggerA };
-    if (gesture === "chord" || gesture === "doubleChord") {
+    if (isChordGesture(gesture)) {
       next.triggerB = validSecondTrigger(triggerA, selectedSlot.triggerB);
     }
     updateSelectedSlot(next);
@@ -172,25 +165,10 @@ export function ShortcutsPage({ bridge }: ShortcutsPageProps) {
   // (and losing the buttons captured so far) on every keystroke.
   const commitCapture = useCallback(
     (buttons: readonly number[]) => {
-      const [triggerA, triggerB] = buttons;
-      if (triggerA === undefined) {
-        return;
-      }
-
-      const isDoubleTap = gesture === "doubleTap" || gesture === "doubleChord";
-      const isChord = triggerB !== undefined;
-      setShortcut(selectedSlotIndex, {
-        ...selectedSlot,
-        triggerA,
-        triggerB: isChord
-          ? triggerB
-          : isDoubleTap
-            ? SHORTCUT_TRIGGER_DOUBLE_TAP
-            : SHORTCUT_TRIGGER_TAP,
-        flags: isChord && isDoubleTap ? SHORTCUT_FLAG_DOUBLE_TAP : 0,
-      });
+      if (buttons.length === 0) return;
+      setShortcut(selectedSlotIndex, captureTrigger(selectedSlot, buttons));
     },
-    [gesture, selectedSlot, selectedSlotIndex, setShortcut],
+    [selectedSlot, selectedSlotIndex, setShortcut],
   );
 
   useEffect(() => {
@@ -373,10 +351,11 @@ export function ShortcutsPage({ bridge }: ShortcutsPageProps) {
                 <fieldset disabled={!bridge.isConnected || isBusy}>
                   <legend>{t("shortcuts.triggerType")}</legend>
                   <div className="choice-grid gesture-choice-grid">
-                    {(["tap", "doubleTap", "chord", "doubleChord"] as const).map((option) => (
+                    {(["tap", "doubleTap", "chord", "doubleChord", "hold", "holdChord"] as const).map((option) => (
                       <button
                         key={option}
                         type="button"
+                        disabled={isHoldGesture(option) && selectedSlot.action !== SHORTCUT_ACTION_KEYBOARD}
                         aria-pressed={gesture === option}
                         onClick={() => updateGesture(option)}
                       >
@@ -384,6 +363,7 @@ export function ShortcutsPage({ bridge }: ShortcutsPageProps) {
                       </button>
                     ))}
                   </div>
+                  {isHoldGesture(gesture) && <p className="field-description">{t("shortcuts.holdHint")}</p>}
                   <div className={`shortcut-listen${isListening ? " listening" : ""}`}>
                     <Button
                       type="button"
@@ -425,7 +405,7 @@ export function ShortcutsPage({ bridge }: ShortcutsPageProps) {
                     </span>
                   </label>
 
-                  {(gesture === "chord" || gesture === "doubleChord") && (
+                  {isChordGesture(gesture) && (
                     <label>
                       <span>{t("shortcuts.triggerB")}</span>
                       <span className="select-shell">
@@ -466,6 +446,7 @@ export function ShortcutsPage({ bridge }: ShortcutsPageProps) {
                     </button>
                     <button
                       type="button"
+                      disabled={isHoldGesture(gesture)}
                       aria-pressed={selectedSlot.action === SHORTCUT_ACTION_CONSUMER}
                       onClick={() => updateAction(SHORTCUT_ACTION_CONSUMER)}
                     >
@@ -474,6 +455,7 @@ export function ShortcutsPage({ bridge }: ShortcutsPageProps) {
                     </button>
                     <button
                       type="button"
+                      disabled={isHoldGesture(gesture)}
                       aria-pressed={selectedSlot.action === SHORTCUT_ACTION_BT_DISCONNECT}
                       onClick={() => updateAction(SHORTCUT_ACTION_BT_DISCONNECT)}
                     >
@@ -583,29 +565,4 @@ function canExtendCapture(captured: readonly number[], button: number): boolean 
     !captured.includes(button) &&
     !(captured.length > 0 && captured[0] <= DPAD_MAX_ID && button <= DPAD_MAX_ID)
   );
-}
-
-function getGesture(shortcut: ShortcutSlot): TriggerGesture {
-  if (shortcut.triggerB === SHORTCUT_TRIGGER_TAP) {
-    return "tap";
-  }
-  if (shortcut.triggerB === SHORTCUT_TRIGGER_DOUBLE_TAP) {
-    return "doubleTap";
-  }
-  return shortcut.flags & SHORTCUT_FLAG_DOUBLE_TAP ? "doubleChord" : "chord";
-}
-
-function validSecondTrigger(triggerA: number, current: number): number {
-  if (
-    current >= 0 &&
-    current < BUTTON_SOURCE_COUNT &&
-    current !== triggerA &&
-    !(current <= DPAD_MAX_ID && triggerA <= DPAD_MAX_ID)
-  ) {
-    return current;
-  }
-
-  return [17, 16, 20, 8].find(
-    (candidate) => candidate !== triggerA && !(candidate <= DPAD_MAX_ID && triggerA <= DPAD_MAX_ID),
-  ) ?? 8;
 }

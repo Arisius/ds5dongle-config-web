@@ -244,10 +244,13 @@ export const zh = {
     consumerKey: "多媒体 / 系统按键",
     invalid: "快捷键未配置完整",
     invalidDescription: "保存前请至少选择一个修饰键或键盘按键。",
+    holdHint: "仅支持键盘输出：按下即按住，松开即释放；组合触发需同时按住两个按钮。需要支持此功能的新固件，旧固件会将该槽位禁用。原手柄输出保持不变，可在按键重映射中禁用对应按钮。",
     gestures: {
+      hold: "按住跟随",
+      holdChord: "组合键跟随",
       tap: "单击",
       doubleTap: "双击",
-      chord: "按住组合键",
+      chord: "组合键触发",
       doubleChord: "双击组合键",
     },
     actions: {
