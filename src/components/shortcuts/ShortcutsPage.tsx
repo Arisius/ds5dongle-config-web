@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import {
   AlertTriangle,
   BluetoothOff,
+  CircleHelp,
   Gamepad2,
   Keyboard,
   Plus,
@@ -54,6 +55,7 @@ const MAX_TRIGGER_BUTTONS = 2;
 
 export function ShortcutsPage({ bridge }: ShortcutsPageProps) {
   const { t } = useTranslation();
+  const gestureHintId = useId();
   const { setShortcut, subscribeControllerButtons } = bridge;
   const [selectedSlotIndex, setSelectedSlotIndex] = useState(0);
   const [isListening, setIsListening] = useState(false);
@@ -356,6 +358,7 @@ export function ShortcutsPage({ bridge }: ShortcutsPageProps) {
                         key={option}
                         type="button"
                         disabled={isHoldGesture(option) && selectedSlot.action !== SHORTCUT_ACTION_KEYBOARD}
+                        aria-describedby={gesture === option ? gestureHintId : undefined}
                         aria-pressed={gesture === option}
                         onClick={() => updateGesture(option)}
                       >
@@ -363,7 +366,20 @@ export function ShortcutsPage({ bridge }: ShortcutsPageProps) {
                       </button>
                     ))}
                   </div>
-                  {isHoldGesture(gesture) && <p className="field-description">{t("shortcuts.holdHint")}</p>}
+                  <div className="shortcut-gesture-help">
+                    <p id={gestureHintId} className="shortcut-gesture-hint">
+                      {t(`shortcuts.gestureHints.${gesture}`)}
+                    </p>
+                    <details className="shortcut-help-details">
+                      <summary>
+                        <CircleHelp size={15} aria-hidden="true" />
+                        {t("shortcuts.usageHelp")}
+                      </summary>
+                      <ul>
+                        <li>{t("shortcuts.holdGamepadHelp")}</li>
+                      </ul>
+                    </details>
+                  </div>
                   <div className={`shortcut-listen${isListening ? " listening" : ""}`}>
                     <Button
                       type="button"

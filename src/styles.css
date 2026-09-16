@@ -1863,11 +1863,75 @@ h2 {
 }
 
 .gesture-choice-grid {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .action-choice-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* Keep the mode explanation light; disclose compatibility details on demand. */
+.shortcut-gesture-help {
+  margin-top: 8px;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.shortcut-gesture-hint {
+  margin: 0;
+}
+
+.shortcut-help-details summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  min-height: 44px;
+  color: var(--app-interactive);
+  cursor: pointer;
+  list-style: none;
+  border-radius: 4px;
+}
+
+.shortcut-help-details summary::-webkit-details-marker {
+  display: none;
+}
+
+.shortcut-help-details summary::after {
+  content: "+";
+}
+
+.shortcut-help-details[open] summary::after {
+  content: "−";
+}
+
+.shortcut-help-details summary:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.shortcut-help-details ul {
+  margin: 0 0 8px;
+  padding-left: 20px;
+  max-width: 65ch;
+  overflow-wrap: anywhere;
+}
+
+.shortcut-help-details li + li {
+  margin-top: 6px;
+}
+
+.shortcut-form .choice-grid {
+  gap: 8px;
+}
+
+.shortcut-form .choice-grid button {
+  min-height: 44px;
+}
+
+.shortcut-form .choice-grid button:disabled {
+  opacity: 0.5;
 }
 
 .shortcut-listen {

@@ -255,7 +255,16 @@ export const fr = {
     consumerKey: "Touche multimédia / système",
     invalid: "Raccourci incomplet",
     invalidDescription: "Choisissez au moins un modificateur ou une touche avant d'enregistrer.",
-    holdHint: "Clavier uniquement : maintenez pour appuyer, relâchez pour libérer. Une combinaison exige les deux boutons. Un firmware à jour est requis ; les anciennes versions désactivent ces emplacements. La sortie manette reste active ; désactivez le bouton source dans le remappage si souhaité.",
+    usageHelp: "Mode d’emploi",
+    holdGamepadHelp: "Les boutons de la manette restent actifs. Pour émettre uniquement des touches clavier, désactivez le bouton source dans le remappage.",
+    gestureHints: {
+      tap: "Appuyez une fois pour déclencher une action.",
+      doubleTap: "Appuyez deux fois rapidement pour déclencher une action.",
+      chord: "Appuyez sur les deux boutons ensemble pour déclencher une action.",
+      doubleChord: "Appuyez deux fois sur la combinaison pour déclencher une action.",
+      hold: "Maintenez le bouton pour garder la touche enfoncée ; relâchez pour la libérer.",
+      holdChord: "Maintenez les deux boutons pour garder la touche enfoncée ; relâchez l’un des deux pour la libérer.",
+    },
     gestures: {
       hold: "Maintien",
       holdChord: "Maintien combiné",

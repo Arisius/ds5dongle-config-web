@@ -244,7 +244,16 @@ export const zh = {
     consumerKey: "多媒体 / 系统按键",
     invalid: "快捷键未配置完整",
     invalidDescription: "保存前请至少选择一个修饰键或键盘按键。",
-    holdHint: "仅支持键盘输出：按下即按住，松开即释放；组合触发需同时按住两个按钮。需要支持此功能的新固件，旧固件会将该槽位禁用。原手柄输出保持不变，可在按键重映射中禁用对应按钮。",
+    usageHelp: "使用说明",
+    holdGamepadHelp: "原手柄按键仍然生效；如需仅输出键盘按键，可在“按键重映射”中禁用原按钮。",
+    gestureHints: {
+      tap: "单击一次，触发一次操作。",
+      doubleTap: "快速按两次，触发一次操作。",
+      chord: "同时按下两个按钮，触发一次操作。",
+      doubleChord: "连续按两次组合键，触发一次操作。",
+      hold: "按住按钮即按住键盘按键，松开即释放。",
+      holdChord: "同时按住两个按钮即保持键盘按下，松开任意一个即释放。",
+    },
     gestures: {
       hold: "按住跟随",
       holdChord: "组合键跟随",

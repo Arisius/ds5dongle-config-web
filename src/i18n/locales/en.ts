@@ -251,7 +251,16 @@ export const en = {
     consumerKey: "Media / system key",
     invalid: "Incomplete shortcut",
     invalidDescription: "Choose at least one modifier or keyboard key before saving.",
-    holdHint: "Keyboard only: press to hold, release to let go. Chords require both buttons held. Requires updated firmware; older firmware disables these slots. Gamepad output is preserved; disable the source in button remapping if desired.",
+    usageHelp: "Usage guide",
+    holdGamepadHelp: "Gamepad buttons remain active. To output only keyboard keys, disable the source button in Button remapping.",
+    gestureHints: {
+      tap: "Tap once to trigger an action.",
+      doubleTap: "Tap twice quickly to trigger an action.",
+      chord: "Press both buttons together to trigger an action once.",
+      doubleChord: "Press the button combination twice to trigger an action.",
+      hold: "Hold the button to keep the keyboard key down; release to let go.",
+      holdChord: "Hold both buttons to keep the keyboard key down; release either to let go.",
+    },
     gestures: {
       hold: "Hold to press",
       holdChord: "Hold chord to press",

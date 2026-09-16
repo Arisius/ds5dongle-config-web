@@ -22,8 +22,13 @@ for (const language of ["en", "zh", "fr"]) {
     );
     expect(html).toContain(i18n.t("shortcuts.gestures.hold"));
     expect(html).toContain(i18n.t("shortcuts.gestures.holdChord"));
-    expect(html).not.toContain("shortcuts.holdHint");
-    expect(html).toContain('class="field-description"');
+    expect(html).toContain(i18n.t("shortcuts.gestureHints.hold"));
+    expect(html).toContain(i18n.t("shortcuts.usageHelp"));
+    expect(html).toContain('<details class="shortcut-help-details">');
+    expect(html).not.toMatch(/<details[^>]*\bopen/);
+    const hintId = html.match(/<p id="([^"]+)" class="shortcut-gesture-hint"/)?.[1];
+    expect(hintId).toBeDefined();
+    expect(html).toContain(`aria-describedby="${hintId}"`);
     // The two non-keyboard action buttons are disabled while holding.
     const disabledActions = html.match(/<button[^>]*disabled=""[^>]*aria-pressed="false"/g) ?? [];
     expect(disabledActions.length).toBe(2);
