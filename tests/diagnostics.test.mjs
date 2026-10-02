@@ -1,0 +1,30 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { pathToFileURL } from 'node:url';
+import ts from 'typescript';
+const source = fs.readFileSync(new URL('../src/protocol/diagnostics.ts', import.meta.url), 'utf8');
+const js = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ES2022 } }).outputText;
+const tempModule = path.join(os.tmpdir(), `ds5-diagnostics-${process.pid}-${Date.now()}.mjs`);
+fs.writeFileSync(tempModule, js);
+const { diagnosticPayload, decodeDiagnostics } = await import(pathToFileURL(tempModule).href);
+fs.unlinkSync(tempModule);
+const raw = process.argv[2] ? fs.readFileSync(process.argv[2]) : Buffer.alloc(11 * 63);
+if (!process.argv[2]) {
+  raw.set([68, 71, 1, 1]);
+  raw[63 + 22] = 0x17; raw[63 + 23] = 1; raw[63 + 21] = 2;
+  raw.writeUInt32LE(250, 63 + 12); raw[63 + 27] = 3; raw[63 + 34] = 2;
+}
+const pages = Array.from({ length: 11 }, (_, i) => diagnosticPayload(new DataView(raw.buffer, raw.byteOffset + i * 63, 63)));
+const result = decodeDiagnostics(pages);
+assert.equal(result.disconnects[0].battery.approximatePercent, 70);
+assert.equal(result.disconnects[0].battery.powerState, 1);
+assert.equal(result.disconnects[0].lastReportAgeMs, 250);
+assert.equal(result.disconnects[0].source, 'inactivity');
+assert.deepEqual(result.disconnects[0].reportsPerSecondNewestFirst, [0, 0, 2]);
+const prefixed = new Uint8Array(64); prefixed[0] = 0xfc; prefixed.set(raw.subarray(0, 63), 1);
+assert.equal(diagnosticPayload(new DataView(prefixed.buffer)).getUint8(0), 68);
+assert.throws(() => diagnosticPayload(new DataView(new ArrayBuffer(12))));
+assert.throws(() => decodeDiagnostics([new DataView(new ArrayBuffer(63))]));
+console.log('diagnostics decoder tests passed');

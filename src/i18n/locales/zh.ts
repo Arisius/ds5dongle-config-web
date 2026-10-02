@@ -1,4 +1,45 @@
 export const zh = {
+  diagnostics: {
+  "read": "获取诊断数据",
+  "title": "手柄断联诊断",
+  "retention": "保留最近 8 次断联；接收器断电后清除。若断联后 USB 设备消失，请重新连接手柄再读取。原因码仅提供线索，不能单独确定根因。",
+  "total": "累计断联：{{count}} 次",
+  "connected": "当前蓝牙已连接",
+  "disconnected": "当前蓝牙已断开",
+  "rates": "每秒状态包数（新 → 旧）",
+  "noSamples": "暂无完整一秒的记录",
+  "empty": "暂无断联记录",
+  "uptime": "开机后 {{seconds}} 秒",
+  "source": "固件主动断联来源",
+  "battery": "最后一帧电量",
+  "powerState": "充电状态码",
+  "age": "最后一帧距断联",
+  "partial": "最后不足一秒的包数",
+  "unknown": "未知",
+  "unknownReason": "其他蓝牙原因（见原始原因码）",
+  "export": "导出诊断 JSON",
+  "readError": "读取诊断失败，请确认接收器已连接且已刷入支持诊断的新固件。",
+  "sources": {
+    "remote": "无主动请求",
+    "other": "其他主动请求",
+    "inactivity": "长时间无操作",
+    "usbSuspend": "USB 休眠",
+    "shortcut": "手柄快捷键",
+    "bootselScan": "BOOTSEL 重新搜索",
+    "clearPairings": "清除配对",
+    "l2capOpenFailed": "L2CAP 通道建立失败",
+    "l2capClosed": "L2CAP 通道关闭"
+  },
+  "reasons": {
+    "8": "蓝牙连接超时",
+    "19": "远端终止连接",
+    "20": "远端资源不足",
+    "21": "远端设备关机",
+    "22": "本地主机终止连接",
+    "34": "LMP 响应超时",
+    "5": "认证失败"
+  }
+},
   app: {
     eyebrow: "WebHID",
     title: "DS5 Bridge 配置",

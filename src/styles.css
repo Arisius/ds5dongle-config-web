@@ -2166,3 +2166,9 @@ h2 {
     height: 44px;
   }
 }
+
+.diagnostics-panel { min-width: 0; }
+.diagnostics-results { margin-top: 12px; overflow-wrap: anywhere; }
+.diagnostics-results p { margin: 8px 0; font-size: 12px; }
+.diagnostics-results details { margin: 10px 0; }
+.diagnostics-results summary { cursor: pointer; font-size: 13px; }

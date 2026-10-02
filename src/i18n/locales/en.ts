@@ -1,4 +1,45 @@
 export const en = {
+  diagnostics: {
+  "read": "Get diagnostics",
+  "title": "Controller disconnect diagnostics",
+  "retention": "Keeps the last 8 disconnects until dongle power-off. If USB disappears, reconnect the controller before reading. Reason codes are clues, not a definitive root cause.",
+  "total": "Total disconnects: {{count}}",
+  "connected": "Bluetooth connected",
+  "disconnected": "Bluetooth disconnected",
+  "rates": "State reports per second (newest first)",
+  "noSamples": "No complete one-second samples",
+  "empty": "No disconnects recorded",
+  "uptime": "{{seconds}} s after boot",
+  "source": "Local disconnect request",
+  "battery": "Last reported battery",
+  "powerState": "power state code",
+  "age": "Last report age at disconnect",
+  "partial": "Reports in final partial second",
+  "unknown": "Unknown",
+  "unknownReason": "Other Bluetooth reason (see raw code)",
+  "export": "Export diagnostics JSON",
+  "readError": "Could not read diagnostics. Connect the dongle and install firmware that supports diagnostics.",
+  "sources": {
+    "remote": "No local request",
+    "other": "Other local request",
+    "inactivity": "Inactivity timeout",
+    "usbSuspend": "USB suspend",
+    "shortcut": "Controller shortcut",
+    "bootselScan": "BOOTSEL scan",
+    "clearPairings": "Clear pairings",
+    "l2capOpenFailed": "L2CAP open failed",
+    "l2capClosed": "L2CAP channels closed"
+  },
+  "reasons": {
+    "8": "Connection timeout",
+    "19": "Remote user terminated connection",
+    "20": "Remote device low resources",
+    "21": "Remote device powered off",
+    "22": "Local host terminated connection",
+    "34": "LMP response timeout",
+    "5": "Authentication failure"
+  }
+},
   app: {
     eyebrow: "WebHID",
     title: "DS5 Bridge Config",

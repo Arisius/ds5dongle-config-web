@@ -1,4 +1,45 @@
 export const fr = {
+  diagnostics: {
+  "read": "Lire le diagnostic",
+  "title": "Diagnostic des déconnexions",
+  "retention": "Les 8 dernières déconnexions sont conservées jusqu’à la mise hors tension du dongle. Si le périphérique USB disparaît, reconnectez la manette avant la lecture. Les codes donnent des indices, pas une cause certaine.",
+  "total": "Déconnexions au total : {{count}}",
+  "connected": "Bluetooth connecté",
+  "disconnected": "Bluetooth déconnecté",
+  "rates": "Rapports par seconde (plus récents en premier)",
+  "noSamples": "Aucun échantillon d’une seconde complète",
+  "empty": "Aucune déconnexion enregistrée",
+  "uptime": "{{seconds}} s après le démarrage",
+  "source": "Demande locale de déconnexion",
+  "battery": "Dernier niveau de batterie reçu",
+  "powerState": "code d’alimentation",
+  "age": "Âge du dernier rapport à la déconnexion",
+  "partial": "Rapports de la dernière seconde incomplète",
+  "unknown": "Inconnu",
+  "unknownReason": "Autre motif Bluetooth (voir le code brut)",
+  "export": "Exporter le diagnostic JSON",
+  "readError": "Lecture impossible. Connectez le dongle avec un firmware prenant en charge le diagnostic.",
+  "sources": {
+    "remote": "Aucune demande locale",
+    "other": "Autre demande locale",
+    "inactivity": "Délai d’inactivité",
+    "usbSuspend": "Suspension USB",
+    "shortcut": "Raccourci de la manette",
+    "bootselScan": "Recherche BOOTSEL",
+    "clearPairings": "Effacement des appairages",
+    "l2capOpenFailed": "Échec d’ouverture L2CAP",
+    "l2capClosed": "Fermeture des canaux L2CAP"
+  },
+  "reasons": {
+    "8": "Délai de connexion dépassé",
+    "19": "Connexion terminée par le périphérique distant",
+    "20": "Ressources distantes insuffisantes",
+    "21": "Périphérique distant éteint",
+    "22": "Connexion terminée par l’hôte local",
+    "34": "Délai de réponse LMP dépassé",
+    "5": "Échec d’authentification"
+  }
+},
   app: {
     eyebrow: "WebHID",
     title: "Configuration DS5 Bridge",

@@ -1,3 +1,4 @@
+import type { Diagnostics } from "../protocol/diagnostics";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -54,6 +55,8 @@ const SIGNAL_STRENGTH_REFRESH_INTERVAL_MS = 5_000;
 export type ControllerButtonListener = (pressed: readonly number[]) => void;
 
 export interface UseDs5BridgeResult {
+  diagnostics: Diagnostics | null;
+  readDiagnostics: () => Promise<void>;
   supported: boolean;
   client: Ds5BridgeHidClient | null;
   controllerModel: ControllerModel | null;
@@ -99,6 +102,7 @@ export interface UseDs5BridgeResult {
 
 export function useDs5Bridge(): UseDs5BridgeResult {
   const { t } = useTranslation();
+  const [diagnostics, setDiagnostics] = useState<Diagnostics | null>(null);
   const supported = webHidAvailable();
   const [client, setClient] = useState<Ds5BridgeHidClient | null>(null);
   const [authorizedDevices, setAuthorizedDevices] = useState<HIDDevice[]>([]);
@@ -153,6 +157,23 @@ export function useDs5Bridge(): UseDs5BridgeResult {
     }
     return t("status.connected");
   }, [areShortcutsDirty, client, isButtonRemapDirty, isDirty, operation, saveState, supported, t]);
+
+  const readDiagnostics = useCallback(async () => {
+    if (!client || operation) return;
+    setOperation("reading");
+    try {
+      const result = await client.readDiagnostics();
+      if (clientRef.current === client) {
+        setDiagnostics(result);
+        setError(null);
+      }
+    } catch {
+      setError(t("diagnostics.readError"));
+    } finally {
+      setOperation(null);
+    }
+  }, [client, operation, t]);
+  useEffect(() => { setDiagnostics(null); }, [client]);
 
   const refreshAuthorizedDevices = useCallback(async () => {
     if (!supported) {
@@ -606,6 +627,8 @@ export function useDs5Bridge(): UseDs5BridgeResult {
   }, [client, refreshAuthorizedDevices, t]);
 
   return {
+    diagnostics,
+    readDiagnostics,
     supported,
     client,
     controllerModel,

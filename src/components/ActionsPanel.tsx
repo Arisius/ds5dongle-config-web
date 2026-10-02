@@ -1,3 +1,4 @@
+import { DiagnosticsPanel } from "./DiagnosticsPanel";
 import { Download, Power, RefreshCw, RotateCcw, Save } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,7 @@ export function ActionsPanel({ bridge, isBusy }: ActionsPanelProps) {
       </CardHeader>
 
       <CardContent className="action-stack p-0">
+        <DiagnosticsPanel bridge={bridge} isBusy={isBusy} />
         <Button
           type="button"
           variant="outline"

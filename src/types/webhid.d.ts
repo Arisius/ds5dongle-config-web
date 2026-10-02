@@ -21,6 +21,8 @@ interface HIDInputReportEvent extends Event {
 }
 
 interface HIDCollectionInfo {
+  readonly featureReports: readonly { reportId: number }[];
+  readonly children: readonly HIDCollectionInfo[];
   readonly usagePage: number;
   readonly usage: number;
 }

@@ -1,3 +1,4 @@
+import { REPORT_DIAGNOSTICS, diagnosticPayload, decodeDiagnostics } from "./diagnostics";
 import {
   ConfigBody,
   FEATURE_REPORT_PAYLOAD_SIZE,
@@ -110,6 +111,22 @@ export class Ds5BridgeHidClient {
     await this.open();
     const report = await this.device.receiveFeatureReport(REPORT_GET_SIGNAL_STRENGTH);
     return decodeSignalStrength(report);
+  }
+
+  async readDiagnostics() {
+    const supportsDiagnostics = (collection: HIDCollectionInfo): boolean =>
+      collection.featureReports.some(report => report.reportId === REPORT_DIAGNOSTICS) ||
+      collection.children.some(supportsDiagnostics);
+    if (!this.device.collections.some(supportsDiagnostics)) throw new Error("Diagnostics firmware required");
+    await this.open();
+    const pages: DataView[] = [];
+    for (let page = 0; page < 11; page++) {
+      const selector = new Uint8Array(63);
+      selector[0] = page;
+      await this.device.sendFeatureReport(REPORT_DIAGNOSTICS, selector);
+      pages.push(diagnosticPayload(await this.device.receiveFeatureReport(REPORT_DIAGNOSTICS)));
+    }
+    return decodeDiagnostics(pages);
   }
 
   async readButtonRemap(): Promise<number[]> {
